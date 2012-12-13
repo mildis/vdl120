@@ -112,7 +112,7 @@ char num2bin_data_char[] =
 
 short int num2bin(short int num)
 {
-    int nabs = abs(num);
+    short int nabs = abs(num);
     if (NUM2BIN_MAX < nabs)
 	{
 		printf("num2bin: cant convert number %i\n", num);
@@ -126,7 +126,7 @@ short int bin2num(short int bin)
 {
     char found = 0;
     int is_negative = 0;
-	int ret = 0;
+	short int ret = 0;
 	
 	is_negative = bin & SIGN_BIT;
 	if (is_negative) bin ^= SIGN_BIT;
@@ -139,9 +139,10 @@ short int bin2num(short int bin)
                 ret = -1*ret;
             
             found = 1;
+            break;
 		}
 	}
-	if (! found) {
+	if (!found) {
         ret = 0;
         if (is_negative)
             printf("bin2num: cant convert data %x\n", bin | SIGN_BIT); // restore sign bit
