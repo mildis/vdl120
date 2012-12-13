@@ -6,10 +6,10 @@ int main (int argc, char **argv)
 	if (argc < 2)
 	{
 		printf("usage:\n"),
-		printf("  %s -c LOGNAME NUM_DATA INTERVAL  -->  configure logger\n", argv[0]);
-		printf("  %s -p  -->  print config\n", argv[0]);
-		printf("  %s -d  -->  print data\n", argv[0]);
-		printf("  %s -s  -->  store data in LOGNAME.dat\n", argv[0]);
+		printf("\t%s -c LOGNAME NUM_DATA INTERVAL  -->  configure logger\n", argv[0]);
+		printf("\t%s -p  -->  print config\n", argv[0]);
+		printf("\t%s -d  -->  print data\n", argv[0]);
+		printf("\t%s -s  -->  store data in LOGNAME.dat\n", argv[0]);
 		return 1;
 	}
 	

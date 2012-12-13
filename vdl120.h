@@ -57,6 +57,8 @@ short int bin2num(short int bin);
 typedef struct s_usb_dl120 {
     IOUSBDeviceInterface** usbDevice;
     IOUSBInterfaceInterface** usbInterface;
+    UInt8 pipeIn;
+    UInt8 pipeOut;
 } s_usb_dl120;
 
 typedef struct s_config {

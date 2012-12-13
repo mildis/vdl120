@@ -9,15 +9,22 @@ s_usb_dl120 *usb_init() {
     CFMutableDictionaryRef matchingDictionary = NULL;
     SInt32 idVendor = VID;
     SInt32 idProduct = PID;
-    io_iterator_t iterator = 0;
+    io_iterator_t iterator;
     io_service_t usbRef;
-    SInt32 score;
+    SInt32 score = 0;
     IOCFPlugInInterface** plugin;
     IOUSBDeviceInterface** usbDevice = NULL;
     IOReturn ret;
     IOUSBConfigurationDescriptorPtr config;
     IOUSBFindInterfaceRequest interfaceRequest;
     IOUSBInterfaceInterface** usbInterface;
+    UInt8 numEndpoints = 0;
+    UInt8 dir = 0;
+    UInt8 num = 0;
+    UInt8 ttype = 0;
+    UInt16 maxPS = 0;
+    UInt8 interval = 0;
+
     
     
     matchingDictionary = IOServiceMatching("IOUSBDevice");
@@ -106,10 +113,39 @@ s_usb_dl120 *usb_init() {
     else {
         dl120->usbDevice = usbDevice;
         dl120->usbInterface = usbInterface;
-        printf("Pipe Status : %i\n",(*usbInterface)->GetPipeStatus(usbInterface, 1));
-        printf("ResetPipe : %i\n", (*usbInterface)->ResetPipe(usbInterface, 1));
-        printf("Pipe Status : %i\n",(*usbInterface)->GetPipeStatus(usbInterface, 2));
-        printf("ResetPipe : %i\n", (*usbInterface)->ResetPipe(usbInterface, 2));
+        dl120->pipeIn = 0;
+        dl120->pipeOut = 0;
+        
+        ret = (*usbInterface)->GetNumEndpoints(usbInterface, &numEndpoints);     
+        if (ret != kIOReturnSuccess)
+        {
+            printf("usb_init:GetNumEndpoints (error: %x)\n", ret);
+            return NULL;
+        }
+        
+        for (UInt8 ep = 1; ep <= numEndpoints; ep++) {
+            ret = (*usbInterface)->GetPipeProperties(usbInterface, ep, &dir, &num, &ttype, & maxPS, &interval);
+            if (ret != kIOReturnSuccess)
+            {
+                printf("usb_init:GetPipeProperties (error: %x)\n", ret);
+                return NULL;
+            }
+            
+            if (kUSBIn == dir) {
+                dl120->pipeIn = ep;
+            }
+            else if (kUSBOut == dir) {
+                dl120->pipeOut = ep;
+            }
+            
+            if (dl120->pipeOut && dl120->pipeIn)
+                break;
+        }
+        
+        printf("usb_init:PipeIn Status : %i\n",(*usbInterface)->GetPipeStatus(usbInterface, dl120->pipeIn));
+        printf("usb_init:ResetPipeIn : %i\n", (*usbInterface)->ResetPipe(usbInterface, dl120->pipeIn));
+        printf("usb_init:PipeOut Status : %i\n",(*usbInterface)->GetPipeStatus(usbInterface, dl120->pipeOut));
+        printf("usb_init:ResetPipeOut : %i\n", (*usbInterface)->ResetPipe(usbInterface, dl120->pipeOut));
     }
         
 #ifdef DEBUG
@@ -124,10 +160,10 @@ void usb_close(s_usb_dl120 *p) {
     printf("Entering usb_close\n");
 #endif
     int ret = 0;
-    ret = (*(p->usbInterface))->ResetPipe(p->usbInterface, 1);
-    printf("ResetPipe : %i\n", ret);
-    ret = (*(p->usbInterface))->ResetPipe(p->usbInterface, 2);
-    printf("ResetPipe : %i\n", ret);
+    ret = (*(p->usbInterface))->ResetPipe(p->usbInterface, p->pipeIn);
+    printf("ResetPipeIn : %i\n", ret);
+    ret = (*(p->usbInterface))->ResetPipe(p->usbInterface, p->pipeOut);
+    printf("ResetPipeOut : %i\n", ret);
     /*
     ret = (*(p->usbInterface))->USBInterfaceClose(p->usbInterface);
     printf("USBInterfaceClose : %i\n", ret);
@@ -147,11 +183,11 @@ void usb_close(s_usb_dl120 *p) {
 IOReturn usb_read(s_usb_dl120 *p, void *buf, UInt32 size) {
 #ifdef DEBUG
     printf("Entering usb_read %p, %p, %i\n", p, buf, size);
-    printf("Pipe Status : %i\n",(*(p->usbInterface))->GetPipeStatus(p->usbInterface, 1));
+    printf("PipeIn Status : %i\n",(*(p->usbInterface))->GetPipeStatus(p->usbInterface, p->pipeIn));
 #endif
     
 
-    IOReturn ret = (*(p->usbInterface))->ReadPipe(p->usbInterface, 1, buf, &size);
+    IOReturn ret = (*(p->usbInterface))->ReadPipe(p->usbInterface, p->pipeIn, buf, &size);
     
     if (kIOReturnSuccess != ret)
     {
@@ -168,9 +204,9 @@ IOReturn usb_read(s_usb_dl120 *p, void *buf, UInt32 size) {
 IOReturn usb_write(s_usb_dl120 *p, void *buf, UInt32 size) {
 #ifdef DEBUG
     printf("Entering usb_write %p, %p, %i\n", p, buf, size);
-    printf("Pipe Status : %i\n",(*(p->usbInterface))->GetPipeStatus(p->usbInterface, 2));
+    printf("PipeOut Status : %i\n",(*(p->usbInterface))->GetPipeStatus(p->usbInterface, p->pipeOut));
 #endif
-    IOReturn ret = (*(p->usbInterface))->WritePipe(p->usbInterface, 2, buf, size);
+    IOReturn ret = (*(p->usbInterface))->WritePipe(p->usbInterface, p->pipeOut, buf, size);
     if (kIOReturnSuccess != ret)
     {
         printf("usb_write:failed with error %x\n", ret);
