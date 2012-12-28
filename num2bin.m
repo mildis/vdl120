@@ -1,9 +1,9 @@
 /* convert to/from cryptic integer encoding */
 
-/* First byte is the numerci value, in a left-align bit order. */
+/* First byte is the numeric value, in a left-align bit order. */
 /* Have to figure how to shift it the rigth number of bits to get the right int */
 
-#include "vdl120.h"
+#include "num2bin.h"
 
 char num2bin_data_char[] =
 {
@@ -115,7 +115,7 @@ short int num2bin(short int num)
     short int nabs = abs(num);
     if (NUM2BIN_MAX < nabs)
 	{
-		printf("num2bin: cant convert number %i\n", num);
+		NSLog(@"num2bin: cant convert number %i\n", num);
 		num = 0;
 	}
 	
@@ -145,9 +145,9 @@ short int bin2num(short int bin)
 	if (!found) {
         ret = 0;
         if (is_negative)
-            printf("bin2num: cant convert data %x\n", bin | SIGN_BIT); // restore sign bit
+            NSLog(@"bin2num: cant convert data %x\n", bin | SIGN_BIT); // restore sign bit
         else
-            printf("bin2num: cant convert data %x\n", bin);
+            NSLog(@"bin2num: cant convert data %x\n", bin);
     }
     
 	return ret;
