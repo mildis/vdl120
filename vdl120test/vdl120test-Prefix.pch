@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'vdl120test' target in the 'vdl120test' project
-//
-
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
