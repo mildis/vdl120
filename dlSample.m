@@ -16,7 +16,7 @@
 }
 
 -(NSString *) description {
-    return [NSString stringWithFormat: @"sample: ts:%@ temp:%li rh:%li\n", timestamp, temperature, RH];
+    return [NSString stringWithFormat: @"sample: ts:%@ temp:%li rh:%li", timestamp, temperature, RH];
 }
 
 @end

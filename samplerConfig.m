@@ -103,6 +103,10 @@
 
 }
 
+-(NSInteger) configuredSamples {
+    return self->configuredSamples;
+}
+
 -(void) setConfiguredSamples:(NSInteger)cfgSamples {
 	if (cfgSamples <= 0 || 16000 < cfgSamples)
 	{
@@ -125,6 +129,10 @@
     self->interval = ival;
 }
 
+-(NSInteger) ledFrequency {
+    return self->ledFrequency;
+}
+
 -(void) setLedFrequency:(NSInteger)ledFreq {
     if (ledFreq != 10 && ledFreq != 20 && ledFreq != 30)
 	{
@@ -134,12 +142,20 @@
     self->ledFrequency = ledFreq;
 }
 
+-(NSInteger) tempScale {
+    return self->tempScale;
+}
+
 -(void) setTempScale:(NSInteger)scale {
     if (TEMP_C != scale && TEMP_F != scale) {
         NSLog(@"setTempScale: invalid scale\n");
         scale = TEMP_C;
     }
     self->tempScale = scale;
+}
+
+-(NSString *) name {
+    return self->name;
 }
 
 -(void) setName:(NSString *)cfgName {
@@ -152,6 +168,10 @@
     self->name = [cfgName substringToIndex: (cfgName.length > 15 ? 15 : cfgName.length)];
 }
 
+-(NSInteger) startMode {
+    return self->startMode;
+}
+
 -(void) setStartMode:(NSInteger)stMode {
     if (MANUAL_START != stMode && AUTO_START != stMode)
 	{
@@ -159,6 +179,14 @@
         stMode = AUTO_START;
 	}
     self->startMode = stMode;
+}
+
+-(NSInteger) lowTemperature {
+    return self->lowTemperature;
+}
+
+-(NSInteger) highTemperature {
+    return self->highTemperature;
 }
 
 -(void) setTemperatureRange:(NSInteger)lowTemp :(NSInteger) highTemp {
@@ -170,7 +198,7 @@
             lowTemp = TEMP_MIN;
 		}
 	} else {
-		if (lowTemperature < TEMP_MIN || TEMP_MAX_C < lowTemperature)
+		if (lowTemp < TEMP_MIN || TEMP_MAX_C < lowTemp)
 		{
 			NSLog(@"setTemperatureRange: invalid Celcius lowTemperature\n");
             lowTemp = TEMP_MIN;
@@ -201,6 +229,14 @@
     self->highTemperature = highTemp;
 }
 
+-(NSInteger) lowRH {
+    return self->lowRH;
+}
+
+-(NSInteger) highRH {
+    return self->highRH;
+}
+
 -(void) setRHRange:(NSInteger)lowHum :(NSInteger)highHum {
     if (lowHum < RH_MIN || RH_MAX < lowHum)
 	{
@@ -229,10 +265,12 @@
 }
 
 -(void) setStartTime:(NSDate *)sTime {
+    /* USELESS ?
     if ([sTime compare:[NSDate date]] == NSOrderedAscending) {
         NSLog(@"setStartTime : sTime in the past");
         sTime = [NSDate date];
     }
+     */
     self->startTime = sTime;
 }
 
