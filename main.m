@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     //samplingSession *session = [[samplingSession alloc] initWithSampler:sampler];
     
 
-    samplerConfig *cfg = [sampler cfg];
+    samplerConfig *cfg = [[samplerConfig alloc] init];
     [cfg setName:@"testAgain"];
     [cfg setConfiguredSamples:12];
     [cfg setInterval:5];
@@ -18,5 +18,6 @@ int main(int argc, char **argv)
     [cfg setRHRange:0 :100];
     [cfg encodeBinaryConfig];
     
+    [sampler setCfg:cfg];
     [sampler writeConfigToSampler];
 }

@@ -283,6 +283,9 @@
     
     char buf[BUFSIZE];
     IOReturn ret;
+#ifdef DEBUG
+    int i;
+#endif
     
     if (nil == cfg) {
 #ifdef DEBUG

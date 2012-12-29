@@ -45,7 +45,7 @@
             RHMin=%li\n\
             RHMax=%li\n\
             startMode=%li\n",
-            name, configuredSamples, recordedSamples, interval, startTime, ledFrequency, tempScale, lowTemperature, highTemperature, lowRH, highRH, startMode];
+            self->name, self->configuredSamples, self->recordedSamples, self->interval, self->startTime, self->ledFrequency, self->tempScale, self->lowTemperature, self->highTemperature, self->lowRH, self->highRH, self->startMode];
 }
 
 -(s_config *) binaryConfigPtr {
@@ -53,24 +53,24 @@
 }
 
 -(void) setBinaryConfigPtr:(s_config *)binConfig {
-    binaryConfig = *binConfig;
+    self->binaryConfig = *binConfig;
 }
 
 -(void) decodeBinaryConfig {
-    name = [NSString stringWithUTF8String:binaryConfig.name];
-    configuredSamples = binaryConfig.num_data_conf;
-    recordedSamples = binaryConfig.num_data_rec;
-    interval = binaryConfig.interval;
+    self->name = [NSString stringWithUTF8String:binaryConfig.name];
+    self->configuredSamples = binaryConfig.num_data_conf;
+    self->recordedSamples = binaryConfig.num_data_rec;
+    self->interval = binaryConfig.interval;
     
-    startTime = [NSDate dateWithString:[NSString stringWithFormat:@"%i-%i-%i %i:%i:%i +0000", binaryConfig.time_year, binaryConfig.time_mon, binaryConfig.time_mday, binaryConfig.time_hour, binaryConfig.time_min, binaryConfig.time_sec]];
+    self->startTime = [NSDate dateWithString:[NSString stringWithFormat:@"%i-%i-%i %i:%i:%i +0000", binaryConfig.time_year, binaryConfig.time_mon, binaryConfig.time_mday, binaryConfig.time_hour, binaryConfig.time_min, binaryConfig.time_sec]];
     
-    tempScale = binaryConfig.temp_scale;
-    lowTemperature = bin2num(binaryConfig.thresh_temp_low);
-    highTemperature = bin2num(binaryConfig.thresh_temp_high);
-    lowRH = bin2num(binaryConfig.thresh_rh_low);
-    highRH = bin2num(binaryConfig.thresh_rh_high);
-    startMode = binaryConfig.start;
-    ledFrequency = (binaryConfig.led_conf & 0x1F);
+    self->tempScale = binaryConfig.temp_scale;
+    self->lowTemperature = bin2num(binaryConfig.thresh_temp_low);
+    self->highTemperature = bin2num(binaryConfig.thresh_temp_high);
+    self->lowRH = bin2num(binaryConfig.thresh_rh_low);
+    self->highRH = bin2num(binaryConfig.thresh_rh_high);
+    self->startMode = binaryConfig.start;
+    self->ledFrequency = (binaryConfig.led_conf & 0x1F);
 }
 
 -(void) encodeBinaryConfig {
@@ -109,7 +109,7 @@
 		NSLog(@"isConfigValid: invalid configuredSamples, valid range: [1:16000]\n");
         cfgSamples = 1;
 	}
-    configuredSamples = cfgSamples;
+    self->configuredSamples = cfgSamples;
 }
 
 -(NSInteger) interval {
@@ -122,7 +122,7 @@
 		NSLog(@"isConfigValid: invalid interval, valid range: [1:86400]\n");
         ival = 1;
 	}
-    interval = ival;
+    self->interval = ival;
 }
 
 -(void) setLedFrequency:(NSInteger)ledFreq {
@@ -131,7 +131,7 @@
 		NSLog(@"setLedFrequency: invalid led frequency\n");
         ledFreq = 10;
 	}
-    ledFrequency = ledFreq;
+    self->ledFrequency = ledFreq;
 }
 
 -(void) setTempScale:(NSInteger)scale {
@@ -139,7 +139,7 @@
         NSLog(@"setTempScale: invalid scale\n");
         scale = TEMP_C;
     }
-    tempScale = scale;
+    self->tempScale = scale;
 }
 
 -(void) setName:(NSString *)cfgName {
@@ -149,7 +149,7 @@
         cfgName = DEFAULT_CFG_NAME;
 	}
     
-    name = [cfgName substringToIndex: (cfgName.length > 15 ? 15 : cfgName.length)];
+    self->name = [cfgName substringToIndex: (cfgName.length > 15 ? 15 : cfgName.length)];
 }
 
 -(void) setStartMode:(NSInteger)stMode {
@@ -158,7 +158,7 @@
 		NSLog(@"setStartMode: invalid start flag\n");
         stMode = AUTO_START;
 	}
-    startMode = stMode;
+    self->startMode = stMode;
 }
 
 -(void) setTemperatureRange:(NSInteger)lowTemp :(NSInteger) highTemp {
@@ -197,8 +197,8 @@
         highTemp = lowTemp + 1;
     }
     
-    lowTemperature = lowTemp;
-    highTemperature = highTemp;
+    self->lowTemperature = lowTemp;
+    self->highTemperature = highTemp;
 }
 
 -(void) setRHRange:(NSInteger)lowHum :(NSInteger)highHum {
@@ -220,8 +220,8 @@
         highHum = lowHum + 1;
 	}
     
-    lowRH = lowHum;
-    highRH = highHum;
+    self->lowRH = lowHum;
+    self->highRH = highHum;
 }
 
 -(NSDate *) startTime {
@@ -233,7 +233,7 @@
         NSLog(@"setStartTime : sTime in the past");
         sTime = [NSDate date];
     }
-    startTime = sTime;
+    self->startTime = sTime;
 }
 
 @end
