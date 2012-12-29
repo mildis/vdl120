@@ -9,14 +9,14 @@
 @dynamic startTime;
 @dynamic ledFrequency;
 @dynamic tempScale;
-@dynamic configName;
+@dynamic name;
 @dynamic startMode;
 
 -(id)init {
     self = [super init];
     
     if (self) {
-        configName = DEFAULT_CFG_NAME;
+        name = DEFAULT_CFG_NAME;
         configuredSamples = 6;
         interval = 10;
         startTime = [NSDate date];
@@ -45,7 +45,7 @@
             RHMin=%li\n\
             RHMax=%li\n\
             startMode=%li\n",
-            configName, configuredSamples, recordedSamples, interval, startTime, ledFrequency, tempScale, lowTemperature, highTemperature, lowRH, highRH, startMode];
+            name, configuredSamples, recordedSamples, interval, startTime, ledFrequency, tempScale, lowTemperature, highTemperature, lowRH, highRH, startMode];
 }
 
 -(s_config *) binaryConfigPtr {
@@ -57,7 +57,7 @@
 }
 
 -(void) decodeBinaryConfig {
-    configName = [NSString stringWithUTF8String:binaryConfig.name];
+    name = [NSString stringWithUTF8String:binaryConfig.name];
     configuredSamples = binaryConfig.num_data_conf;
     recordedSamples = binaryConfig.num_data_rec;
     interval = binaryConfig.interval;
@@ -77,7 +77,7 @@
     binaryConfig.config_begin = 0xce;
 	binaryConfig.config_end = 0xce;
     
-    strncpy(binaryConfig.name, [configName UTF8String], 16);
+    strncpy(binaryConfig.name, [name UTF8String], 16);
     binaryConfig.num_data_conf = (int) configuredSamples;
     binaryConfig.num_data_rec = (int) recordedSamples;
     binaryConfig.interval = (int) interval;
@@ -142,14 +142,14 @@
     tempScale = scale;
 }
 
--(void) setConfigName:(NSString *)cfgName {
+-(void) setName:(NSString *)cfgName {
     if (0 == cfgName.length)
 	{
 		NSLog(@"isConfigValid: empty name\n");
         cfgName = DEFAULT_CFG_NAME;
 	}
     
-    configName = [cfgName substringToIndex: (cfgName.length > 15 ? 15 : cfgName.length)];
+    name = [cfgName substringToIndex: (cfgName.length > 15 ? 15 : cfgName.length)];
 }
 
 -(void) setStartMode:(NSInteger)stMode {

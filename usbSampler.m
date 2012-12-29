@@ -152,7 +152,7 @@
         (*usbInterface)->ResetPipe(usbInterface, pipeOut);
         
 #ifdef DEBUG
-        NSLog(@"Leaving usb_init\n");
+        NSLog(@"Leaving init\n");
 #endif
     }
     return self;

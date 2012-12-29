@@ -57,7 +57,7 @@ typedef struct s_config {
     NSInteger lowRH;
     NSInteger highRH;
     NSInteger tempScale;
-    NSString *configName;
+    NSString *name;
     NSInteger startMode;
 }
 
@@ -76,7 +76,7 @@ typedef struct s_config {
 @property NSDate *startTime;
 @property NSInteger ledFrequency;
 @property NSInteger tempScale;
-@property NSString *configName;
+@property NSString *name;
 @property NSInteger startMode;
 
 @end
