@@ -47,18 +47,18 @@ typedef struct s_config {
 
 @interface samplerConfig : NSObject {
     s_config binaryConfig;
-    NSInteger configuredSamples;
-    NSInteger recordedSamples;
-    NSInteger interval;
+    NSNumber *configuredSamples;
+    NSNumber *recordedSamples;
+    NSNumber *interval;
     NSDate *startTime;
-    NSInteger ledFrequency;
-    NSInteger lowTemperature;
-    NSInteger highTemperature;
-    NSInteger lowRH;
-    NSInteger highRH;
-    NSInteger tempScale;
+    NSNumber *ledFrequency;
+    NSNumber *lowTemperature;
+    NSNumber *highTemperature;
+    NSNumber *lowRH;
+    NSNumber *highRH;
+    NSNumber *tempScale;
     NSString *name;
-    NSInteger startMode;
+    NSNumber *startMode;
 }
 
 -(s_config *) binaryConfigPtr;
@@ -66,18 +66,21 @@ typedef struct s_config {
 -(void) decodeBinaryConfig;
 -(void) encodeBinaryConfig;
 
--(void) setTemperatureRange:(NSInteger) lowTemp :(NSInteger) highTemp;
--(void) setRHRange:(NSInteger) lowHum :(NSInteger) highHum;
+-(id) initWithPropertyListAtPath:(NSString *) path;
+-(void) save:(NSString *)path;
+
+-(void) setTemperatureRange:(NSNumber *) lowTemp :(NSNumber *) highTemp;
+-(void) setRHRange:(NSNumber *) lowHum :(NSNumber *) highHum;
 
 @property s_config binaryConfig;
-@property NSInteger configuredSamples;
-@property NSInteger recordedSamples;
-@property NSInteger interval;
+@property NSNumber *configuredSamples;
+@property NSNumber *recordedSamples;
+@property NSNumber *interval;
 @property NSDate *startTime;
-@property NSInteger ledFrequency;
-@property NSInteger tempScale;
+@property NSNumber *ledFrequency;
+@property NSNumber *tempScale;
 @property NSString *name;
-@property NSInteger startMode;
+@property NSNumber *startMode;
 
 @end
 #endif

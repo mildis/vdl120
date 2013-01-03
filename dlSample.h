@@ -3,15 +3,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface dlSample : NSObject {
+@interface dlSample : NSObject <NSCoding> {
     NSDate *timestamp;
-    NSInteger RH;
-    NSInteger temperature;
+    NSNumber *RH;
+    NSNumber *temperature;
 }
 
 @property NSDate *timestamp;
-@property NSInteger RH;
-@property NSInteger temperature;
+@property NSNumber *RH;
+@property NSNumber *temperature;
 
 @end
 #endif

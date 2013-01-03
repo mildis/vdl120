@@ -291,7 +291,7 @@
 #ifdef DEBUG
         NSLog(@"readConfigFromSampler: no configuration allocated. Allocating one.");
 #endif
-        cfg = [[samplerConfig alloc] init];
+        cfg = [samplerConfig new];
     }
     
     ret = [self setSamplerCommand: DL120_RDCNF];
@@ -404,7 +404,7 @@
 	char buf[BUFSIZE];
 	int ret, i, num_data;
 	
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[cfg recordedSamples]];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[cfg recordedSamples].intValue];
 	
 	if ([cfg recordedSamples] == 0)
 	{
@@ -418,7 +418,7 @@
         
         NSDate *startedAt = [cfg startTime];
         
-        for (num_data = 0; num_data < [cfg recordedSamples];)
+        for (num_data = 0; num_data < [cfg recordedSamples].intValue;)
         {
             if (num_data >= 4096) return array;
             
@@ -450,10 +450,10 @@
                 /* parse data: 4 bytes per data point (64/4=16) */
                 for (i = 0; i < (BUFSIZE/4); i++)
                 {
-                    dlSample *data_temp = [[dlSample alloc] init];
-                    [data_temp setTimestamp:[startedAt dateByAddingTimeInterval:([cfg interval]*i)]];
-                    [data_temp setTemperature:*((short int *)buf+(i*2))];
-                    [data_temp setRH:*((short int *)buf+(i*2)+1)];
+                    dlSample *data_temp = [dlSample new];
+                    [data_temp setTimestamp:[startedAt dateByAddingTimeInterval:([[cfg interval]intValue]*i)]];
+                    [data_temp setTemperature:[NSNumber numberWithShort:*((short int *)buf+(i*2))]];
+                    [data_temp setRH:[NSNumber numberWithShort:*((short int *)buf+(i*2)+1)]];
                     
                     /*
                      memcpy((char *)data_temp, (char *)buf+i*4, 4);
@@ -464,7 +464,7 @@
                     [array addObject:data_temp];
                     
                     num_data++;
-                    if (num_data == [cfg recordedSamples])
+                    if (num_data == [cfg recordedSamples].intValue)
                         break;
                 }
             }
