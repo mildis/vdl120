@@ -22,7 +22,7 @@
 -(id) initWithArchiveAtPath:(NSString *) path {
     self = [super init];
     
-    self = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    self = [NSKeyedUnarchiver unarchiveObjectWithFile:[path stringByExpandingTildeInPath]];
     
     return self;
 }
