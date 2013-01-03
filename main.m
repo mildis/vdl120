@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     samplingSession *session = [[samplingSession alloc] initWithSampler:sampler];
     NSLog(@"%@", [session datas]);
     
-    /*
+    
     BOOL saveOK =[session save:@"~/session.plist"];
     if (saveOK == YES) {
         NSLog(@"Saving OK");
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     else {
         NSLog(@"Saving NOK");
     }
-    */
+    
     
     /*
     samplerConfig *cfg = [[samplerConfig alloc] init];

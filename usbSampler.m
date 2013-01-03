@@ -406,7 +406,7 @@
 	
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[cfg recordedSamples].intValue];
 	
-	if ([cfg recordedSamples] == 0)
+	if ([cfg recordedSamples].intValue == 0)
 	{
 		NSLog(@"readData: no data to read\n");
 		return NULL;
@@ -451,7 +451,7 @@
                 for (i = 0; i < (BUFSIZE/4); i++)
                 {
                     dlSample *data_temp = [dlSample new];
-                    [data_temp setTimestamp:[startedAt dateByAddingTimeInterval:([[cfg interval]intValue]*i)]];
+                    [data_temp setTimestamp:[startedAt dateByAddingTimeInterval:([[cfg interval]intValue]*num_data)]];
                     [data_temp setTemperature:[NSNumber numberWithShort:*((short int *)buf+(i*2))]];
                     [data_temp setRH:[NSNumber numberWithShort:*((short int *)buf+(i*2)+1)]];
                     
@@ -460,12 +460,16 @@
                      data_temp->time = time_start_stamp + num_data * cfg->interval;
                      data_temp->next = NULL;
                      */
-                    
+
                     [array addObject:data_temp];
                     
                     num_data++;
-                    if (num_data == [cfg recordedSamples].intValue)
+                    if (num_data == [cfg recordedSamples].intValue) {
+#ifdef DEBUG
+                        NSLog(@"readData : read %i records", num_data);
+#endif
                         break;
+                    }
                 }
             }
             else {
@@ -482,7 +486,7 @@
 	}
     
 #ifdef DEBUG
-    NSLog(@"Leaving read_data\n");
+    NSLog(@"Leaving readData\n");
 #endif
 	
 	return array;
