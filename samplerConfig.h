@@ -66,6 +66,7 @@ typedef struct s_config {
 -(void) decodeBinaryConfig;
 -(void) encodeBinaryConfig;
 
+-(id) initWithName:(NSString *) name;
 -(id) initWithPropertyListAtPath:(NSString *) path;
 -(void) save:(NSString *)path;
 

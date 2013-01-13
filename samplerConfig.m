@@ -31,6 +31,15 @@
     return self;
 }
 
+-(id)initWithName:(NSString *)aName {
+    self = [super init];
+    
+    if (self) {
+        [self setName:aName];
+    }
+    return self;
+}
+
 - (NSString *)description {
     return [NSString stringWithFormat: @"samplerConfig: \n\
             configName=%@\n\
