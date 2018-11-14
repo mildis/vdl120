@@ -61,8 +61,14 @@
     self->configuredSamples = [NSNumber numberWithInt:binaryConfig.num_data_conf];
     self->recordedSamples = [NSNumber numberWithInt:binaryConfig.num_data_rec];
     self->interval = [NSNumber numberWithInt:binaryConfig.interval];
-    
-    self->startTime = [NSDate dateWithString:[NSString stringWithFormat:@"%i-%i-%i %i:%i:%i +0000", binaryConfig.time_year, binaryConfig.time_mon, binaryConfig.time_mday, binaryConfig.time_hour, binaryConfig.time_min, binaryConfig.time_sec]];
+	
+	NSDateFormatter *dadate = [[NSDateFormatter alloc] init];
+	dadate.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+	dadate.dateFormat = @"yyyy-MM-dd HH:mm:ss ZZZZZ";
+	dadate.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+
+	
+    self->startTime = [dadate dateFromString:[NSString stringWithFormat:@"%i-%i-%i %i:%i:%i +0000", binaryConfig.time_year, binaryConfig.time_mon, binaryConfig.time_mday, binaryConfig.time_hour, binaryConfig.time_min, binaryConfig.time_sec]];
     
     self->tempScale = [NSNumber numberWithChar:binaryConfig.temp_scale];
     self->lowTemperature = [NSNumber numberWithShort:bin2num(binaryConfig.thresh_temp_low)];
@@ -82,8 +88,8 @@
     binaryConfig.num_data_rec = recordedSamples.intValue;
     binaryConfig.interval = interval.intValue;
     
-    unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    unsigned unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     [gregorian setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     NSDateComponents *comps = [gregorian components:unitFlags fromDate:startTime];
     binaryConfig.time_year = (int) [comps year];
@@ -278,13 +284,13 @@
     self = [super init];
     
     NSPropertyListFormat format;
-    NSString *errorDesc = nil;
+    NSError *errorDesc = nil;
     NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:path];
     NSDictionary *dict = (NSDictionary *)[NSPropertyListSerialization
-                                          propertyListFromData:plistXML
-                                          mutabilityOption:NSPropertyListImmutable
+                                          propertyListWithData:plistXML
+                                          options:NSPropertyListImmutable
                                           format:&format
-                                          errorDescription:&errorDesc];
+                                          error:&errorDesc];
     if (!dict) {
         NSLog(@"Error reading plist: %@, format: %ld", errorDesc, format);
     }

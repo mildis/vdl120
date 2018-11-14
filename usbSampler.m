@@ -233,7 +233,12 @@
     return ret;
 }
 
--(IOReturn) setSamplerCommand: (int) command {
+-(IOReturn) setSamplerCommand:(int) command {
+	return [self setSamplerCommand: command: 0];
+}
+
+
+-(IOReturn) setSamplerCommand:(int) command :(char) offset {
 #ifdef DEBUG
     NSLog(@"Entering setSamplerCommand\n");
 #endif
@@ -261,7 +266,7 @@
             
         case DL120_KEEP:
             buf[0] = 0x00;
-            buf[1] = 0x01;
+            buf[1] = offset;
             buf[2] = 0x40;
             break;
             
@@ -344,7 +349,7 @@
 #endif
     
     char buf[BUFSIZE];
-    IOReturn ret;
+    IOReturn ret = 0;
     
     if (nil == cfg) {
         NSLog(@"writeConfigToSampler : no configuration set");
@@ -400,7 +405,7 @@
 }
 
 -(NSMutableArray *) readData {
-    
+	char offset=1;
 	char buf[BUFSIZE];
 	int ret, i, num_data;
 	
@@ -422,12 +427,13 @@
         {
             if (num_data >= 4096) return array;
             
-            /* send (random?) keep-alive packet every 1024 bytes */
+            /* it looks like that one must set a base adress
+               every 1024 data points (= every 64 packets, 4096 bytes) */
             /* the logger sends another response header before further data */
             if (num_data % 1024 == 0)
             {
                 if (0 < num_data) {
-                    ret = [self setSamplerCommand: DL120_KEEP];
+                    ret = [self setSamplerCommand: DL120_KEEP :offset++];
                     if (kIOReturnSuccess != ret)
                     {
                         NSLog(@"readData:send_cmd keep alive failed with error %i\n", ret);

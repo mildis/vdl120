@@ -28,9 +28,10 @@
     samplerConfig *cfg;
     
 }
--(IOReturn) readFromSampler:(void *)toBuf: (UInt32) ofSize;
--(IOReturn) writeToSampler:(void *)fromBuf: (UInt32) ofSize;
--(IOReturn) setSamplerCommand: (int) command;
+-(IOReturn) readFromSampler:(void *)toBuf :(UInt32) ofSize;
+-(IOReturn) writeToSampler:(void *)fromBuf :(UInt32) ofSize;
+-(IOReturn) setSamplerCommand:(int) command;
+-(IOReturn) setSamplerCommand:(int) command :(char) offset;
 -(void) readConfigFromSampler;
 -(IOReturn) writeConfigToSampler;
 -(void) printCurrentConfig;
